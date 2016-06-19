@@ -400,6 +400,10 @@ footer .footer-below {
     box-shadow: none;
 }
 
+.portfolio-modal .modal-content p {
+    text-align: justify;
+}
+
 .portfolio-modal .modal-content h2 {
     margin: 0;
     font-size: 3em;
