@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Veeresh Taranalli</title>
+    <link>/authors/veeresh-taranalli/</link>
+    <description>Recent content on Veeresh Taranalli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 Sep 2016 00:00:00 -0700</lastBuildDate>
+    
+	<atom:link href="/authors/veeresh-taranalli/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>On the capacity of the beta-binomial channel model for multi-level cell flash memories</title>
+      <link>/publication/jsac_2016/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/jsac_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Channel models for multi-level cell flash memories based on empirical error analysis</title>
+      <link>/publication/tcom_2016/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/tcom_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Channel models for multi-level cell flash memories based on empirical error analysis</title>
+      <link>/publication/nvmw_2016/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 -0800</pubDate>
+      
+      <guid>/publication/nvmw_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Error analysis and inter-cell interference mitigation in multi-level cell flash memories</title>
+      <link>/publication/icc_2015/</link>
+      <pubDate>Mon, 01 Jun 2015 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/icc_2015/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Polar codes for magnetic recording channels</title>
+      <link>/publication/itw_2015/</link>
+      <pubDate>Fri, 01 May 2015 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/itw_2015/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Adaptive linear programming decoding of polar codes</title>
+      <link>/publication/isit_2014/</link>
+      <pubDate>Fri, 04 Jul 2014 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/isit_2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Plotting Trellis Diagrams with CommPy in Python</title>
+      <link>/post/plotting-trellis-diagrams-commpy/</link>
+      <pubDate>Tue, 20 Mar 2012 00:00:00 -0700</pubDate>
+      
+      <guid>/post/plotting-trellis-diagrams-commpy/</guid>
+      <description>A trellis diagram is a representation of a convolutional code. During the study of convolutional and turbo codes, one often encounters situations where we would like to visualize the trellis diagram representation of a simple 4-state or an 8-state convolutional code.
+CommPy is an open source toolkit implementing digital communication algorithms in Python using NumPy,SciPy, Matplotlib and Cython. The visualize function in CommPy&amp;rsquo;s Trellis class is an attempt to make plotting trellis diagrams easy and simple.</description>
+    </item>
+    
+  </channel>
+</rss>

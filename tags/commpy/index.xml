@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>commpy on Veeresh Taranalli</title>
+    <link>/tags/commpy/</link>
+    <description>Recent content in commpy on Veeresh Taranalli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 27 Mar 2012 00:00:00 -0700</lastBuildDate>
+    
+	<atom:link href="/tags/commpy/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The Viterbi Algorithm - Illustrated!</title>
+      <link>/post/viterbi-algorithm-illustrated/</link>
+      <pubDate>Tue, 27 Mar 2012 00:00:00 -0700</pubDate>
+      
+      <guid>/post/viterbi-algorithm-illustrated/</guid>
+      <description>It is often helpful to visualize the operation of the Viterbi Algorithm used in the decoding of convolutional codes. Here is an attempt to do the same using Python, Matplotlib, NumPy, SciPy and CommPy.
+Below is a video which shows one such illustration of the Viterbi Algorithm in action using the following parameters.
+The convolutional code is represented by the encoder matrix, $$ G(D)=[1+D^2,1+D+D^2] $$ Let us assume that the transmitted message is [1, 0, 0, 0] and hence the corresponding codeword is [11, 01, 11, 00].</description>
+    </item>
+    
+  </channel>
+</rss>
