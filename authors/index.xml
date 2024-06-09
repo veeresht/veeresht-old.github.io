@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Authors on Veeresh Taranalli</title>
@@ -22,60 +22,6 @@
     </item>
     
     <item>
-      <title>Arman Fazeli</title>
-      <link>/authors/arman-fazeli/</link>
-      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
-      
-      <guid>/authors/arman-fazeli/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Paul H. Siegel</title>
-      <link>/authors/paul-h.-siegel/</link>
-      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
-      
-      <guid>/authors/paul-h.-siegel/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Sarit Buzaglo</title>
-      <link>/authors/sarit-buzaglo/</link>
-      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
-      
-      <guid>/authors/sarit-buzaglo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Veeresh Taranall</title>
-      <link>/authors/veeresh-taranall/</link>
-      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
-      
-      <guid>/authors/veeresh-taranall/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Hironori Uchikawa</title>
-      <link>/authors/hironori-uchikawa/</link>
-      <pubDate>Thu, 01 Sep 2016 00:00:00 -0700</pubDate>
-      
-      <guid>/authors/hironori-uchikawa/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Veeresh Taranalli</title>
-      <link>/authors/veeresh-taranalli/</link>
-      <pubDate>Thu, 01 Sep 2016 00:00:00 -0700</pubDate>
-      
-      <guid>/authors/veeresh-taranalli/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Aman Bhatia</title>
       <link>/authors/aman-bhatia/</link>
       <pubDate>Fri, 01 May 2015 00:00:00 -0700</pubDate>
@@ -94,11 +40,29 @@
     </item>
     
     <item>
+      <title>Arman Fazeli</title>
+      <link>/authors/arman-fazeli/</link>
+      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
+      
+      <guid>/authors/arman-fazeli/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Dahua Qin</title>
       <link>/authors/dahua-qin/</link>
       <pubDate>Fri, 01 May 2015 00:00:00 -0700</pubDate>
       
       <guid>/authors/dahua-qin/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hironori Uchikawa</title>
+      <link>/authors/hironori-uchikawa/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 -0700</pubDate>
+      
+      <guid>/authors/hironori-uchikawa/</guid>
       <description></description>
     </item>
     
@@ -121,6 +85,24 @@
     </item>
     
     <item>
+      <title>Paul H. Siegel</title>
+      <link>/authors/paul-h.-siegel/</link>
+      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
+      
+      <guid>/authors/paul-h.-siegel/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sarit Buzaglo</title>
+      <link>/authors/sarit-buzaglo/</link>
+      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
+      
+      <guid>/authors/sarit-buzaglo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Shafa Dahandeh</title>
       <link>/authors/shafa-dahandeh/</link>
       <pubDate>Fri, 01 May 2015 00:00:00 -0700</pubDate>
@@ -135,6 +117,24 @@
       <pubDate>Fri, 01 May 2015 00:00:00 -0700</pubDate>
       
       <guid>/authors/teik-yeo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Veeresh Taranall</title>
+      <link>/authors/veeresh-taranall/</link>
+      <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
+      
+      <guid>/authors/veeresh-taranall/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Veeresh Taranalli</title>
+      <link>/authors/veeresh-taranalli/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 -0700</pubDate>
+      
+      <guid>/authors/veeresh-taranalli/</guid>
       <description></description>
     </item>
     

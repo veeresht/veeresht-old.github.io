@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Veeresh Taranalli on Veeresh Taranalli</title>
@@ -10,39 +11,608 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Publications</title>
-      <link>/publication/</link>
+      <title>Permuted successive cancellation decoding for polar codes</title>
+      <link>/publication/isit_2017/</link>
       <pubDate>Thu, 01 Jun 2017 00:00:00 -0700</pubDate>
       
-      <guid>/publication/</guid>
+      <guid>/publication/isit_2017/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Posts</title>
-      <link>/post/</link>
+      <title>On efficient decoding of polar codes with large kernels</title>
+      <link>/publication/wcnc_2017/</link>
+      <pubDate>Mon, 01 May 2017 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/wcnc_2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>On the capacity of the beta-binomial channel model for multi-level cell flash memories</title>
+      <link>/publication/jsac_2016/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/jsac_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Channel models for multi-level cell flash memories based on empirical error analysis</title>
+      <link>/publication/tcom_2016/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/tcom_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Channel models for multi-level cell flash memories based on empirical error analysis</title>
+      <link>/publication/nvmw_2016/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 -0800</pubDate>
+      
+      <guid>/publication/nvmw_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Exploring Trends in Polar Codes Research</title>
+      <link>/post/exploring-trends-polar-codes-research/</link>
       <pubDate>Sun, 30 Aug 2015 00:00:00 -0700</pubDate>
       
-      <guid>/post/</guid>
+      <guid>/post/exploring-trends-polar-codes-research/</guid>
+      <description>
+
+&lt;p&gt;Polar codes are easily the most significant recent development in the areas of coding and information theory research. A wide variety of applications have been proposed for polar codes mainly due to their capacity achieving property for many different communication channels.&lt;/p&gt;
+
+&lt;p&gt;In this post, we explore the trends in research publications on the topic of polar codes in their brief but exciting history.&lt;/p&gt;
+
+&lt;p&gt;This post also serves as a tutorial in exploratory data analysis using Python and Pandas along with Matplotlib for plotting.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;%matplotlib inline
+
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.style.use(&#39;ggplot&#39;)
+
+import numpy as np
+import pandas as pd
+import re
+
+# Make the graphs a bit prettier, and bigger
+pd.set_option(&#39;display.mpl_style&#39;, &#39;default&#39;) 
+
+matplotlib.rcParams[&#39;font.size&#39;] = 14.0
+matplotlib.rcParams[&#39;font.sans-serif&#39;] = &#39;Avant Garde&#39;
+matplotlib.rcParams[&#39;xtick.labelsize&#39;] = &#39;large&#39;
+matplotlib.rcParams[&#39;ytick.labelsize&#39;] = &#39;large&#39;
+
+# Other Pandas options
+pd.set_option(&#39;display.width&#39;, 5000) 
+pd.set_option(&#39;display.max_columns&#39;, 60) 
+pd.options.mode.chained_assignment = None
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;data-collection-and-cleaning&#34;&gt;Data Collection and Cleaning&lt;/h3&gt;
+
+&lt;p&gt;For our analysis, it is sufficient to work with research publication citation data which is available from IEEE Xplore. We download the data using two search strings &amp;ldquo;polar codes&amp;rdquo; and &amp;ldquo;channel polarization&amp;rdquo;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# Read raw data from IEEE Xplore using search strings 
+# &#39;polar codes&#39; and &#39;channel polarization&#39;
+pcdf1 = pd.read_csv(&#39;ieee_data/polar_codes_export2015.08.29-15.43.27.csv&#39;, 
+                    skiprows = 1)
+pcdf2 = pd.read_csv(&#39;ieee_data/channel_polarization_export2015.08.29-15.55.28.csv&#39;,
+                    skiprows = 1)
+
+# Merge the two data frames
+pcdf = pd.concat([pcdf1, pcdf2], ignore_index = True)
+
+# Rename columns to remove spaces in column names
+pcdf.rename(columns=lambda x: x.replace(&#39; &#39;, &#39;_&#39;), inplace=True)
+
+# Remove duplicate rows from the merged data frame
+pcdf = pcdf.drop_duplicates()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, the set of publications obtained is not entirely clean and there are some papers with the word &amp;ldquo;polarization&amp;rdquo; in their titles or abstracts that show up in our dataset but are not related to polar codes. We can clean them up using regular expression based filtering as follows. We also know that polar codes were invented in the year 2008 and hence can safely eliminate any papers with a publication date earlier than 2008.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# Construct a regex string to filter entries in the data frame
+# not related to polar codes
+polar_codes_regex_str = (&#39;([pP]olar [cC]odes)|([cC]hannel [pP]olarization)|&#39;
+                         &#39;[rR]ate.*[pP]olarization|[pP]olarized.*[cC]hannels|&#39;
+                         &#39;[cC]hannels.*[pP]olarized&#39;)
+relevant_titles = pcdf.Document_Title.str.contains(polar_codes_regex_str, 
+                                flags=re.IGNORECASE, regex=True, na=False)
+pcdf = pcdf[relevant_titles]
+
+# Remove entries from earlier than 2008 as we know 
+# polar codes were invented in 2008.
+pcdf = pcdf[pcdf[&#39;Year&#39;] &amp;gt;= 2008]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h3&gt;
+
+&lt;p&gt;As a first step, we can simply look at the total number of papers published on polar codes in every year as follows.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# Study the total number of &#39;polar code&#39; publications with years 
+pub_counts_per_year = pcdf[&#39;Year&#39;].value_counts(sort = False)
+
+fig_1 = plt.figure(figsize=[15, 5])
+pub_counts_per_year.plot(kind=&#39;bar&#39;)
+plt.xlabel(&#39;Year&#39;)
+plt.ylabel(&#39;Number of Publications&#39;)
+plt.title(&amp;quot;Total Publications on Polar Codes&amp;quot;)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;fig1.png&#34; /&gt;
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;From the plot above, it very exciting to see that polar code research has been growing steadily since 2012 with the last year of 2014 recording well over 70 publications. The number of publications in 2015 seems a bit low however, the publications from recent conferences in 2015 such as ISIT and ICC are yet to appear on IEEE Xplore.&lt;/p&gt;
+
+&lt;p&gt;Next we look at the type of publications in our dataset. In our analysis, we want to focus on IEEE Conference or Journal publications. We look at the total number of IEEE Conference and IEEE Journal publications in every year as follows.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;pcdf_grouped = pcdf.groupby(&#39;Document_Identifier&#39;)
+pub_counts_per_year_2 = pcdf_grouped[&#39;Year&#39;].value_counts(sort = False)
+pub_counts_per_year_conf = pub_counts_per_year_2[&#39;IEEE Conference Publications&#39;]
+pub_counts_per_year_journal = pub_counts_per_year_2[&#39;IEEE Journals &amp;amp; Magazines&#39;]
+
+fig_2 = plt.figure(figsize=[15, 5])
+
+plt.subplot(121)
+pub_counts_per_year_conf.plot(kind=&#39;bar&#39;)
+plt.ylim([0, 50])
+plt.xlabel(&#39;Year&#39;)
+plt.ylabel(&#39;Number of Publications&#39;)
+plt.title(&#39;IEEE Conferences&#39;)
+
+plt.subplot(122)
+pub_counts_per_year_journal.plot(kind=&#39;bar&#39;)
+plt.ylim([0, 50])
+plt.xlabel(&#39;Year&#39;)
+plt.title(&#39;IEEE Journals&#39;)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;fig2.png&#34; /&gt;
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;Clearly, the conference papers outnumber the journal publications by a significant margin and this is expected. The year 2013 seems to represent a peak in journal publications but it is difficult to conclude much as one must keep in mind the large turnaround times for journal publication reviews.&lt;/p&gt;
+
+&lt;p&gt;As IEEE conference publications make up most of the polar code publications in the dataset, one would be interested in knowing which conferences are popular venues for presenting polar code research. For this we can create a scatter plot as follows using knowledge of 8 popular IEEE conferences in information theory and coding theory research which are ISIT, ITW, Allerton, ICC, ICNC, WCNC, GLOBECOM, and Asilomar conferences.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# Study the publication counts grouped by major IEEE conferences in every year
+pcdf_confs = pcdf[pcdf[&#39;Document_Identifier&#39;] == &#39;IEEE Conference Publications&#39;]
+unique_confs = pd.unique(pcdf_confs.Publication_Title.ravel())
+
+conf_names = [&#39;ISIT&#39;, &#39;ITW&#39;, &#39;Allerton&#39;, &#39;ICC&#39;, &#39;ICNC&#39;, \
+              &#39;WCNC&#39;, &#39;GLOBECOM&#39;, &#39;Asilomar&#39;]
+    
+def get_conf_name(x, conf_names):
+    is_conf = np.array([y in x for y in conf_names])
+    if np.sum(is_conf):
+        return conf_names[np.arange(len(conf_names))[is_conf]]
+    else:
+        return &#39;&#39;
+    
+pcdf_confs[&#39;IEEE_Conference&#39;] = \
+        pcdf_confs[&#39;Publication_Title&#39;].map(lambda x: get_conf_name(x, conf_names)) 
+    
+pcdf_confs_grouped = pcdf_confs.groupby(&#39;IEEE_Conference&#39;)
+pcdf_confs_grouped_counts = pcdf_confs_grouped[&#39;Year&#39;].value_counts(sort = False)
+pcdf_confs_grouped_counts = pcdf_confs_grouped_counts.unstack(-1)
+pcdf_confs_grouped_counts = pcdf_confs_grouped_counts.fillna(0)
+pcdf_confs_grouped_counts = pcdf_confs_grouped_counts[1:]
+
+fig_3 = plt.figure(figsize=[15, 5])
+ax = plt.subplot(111)
+ylabel_list = []
+ylabel_ticks = []
+xlabel_list = [str(x) for x in pcdf_confs_grouped_counts.columns]
+xlabel_ticks = [int(x) for x in pcdf_confs_grouped_counts.columns]
+plot_colors = [&amp;quot;#9b59b6&amp;quot;, &amp;quot;#3498db&amp;quot;, &amp;quot;#95a5a6&amp;quot;, &amp;quot;#e74c3c&amp;quot;, \
+               &amp;quot;#34495e&amp;quot;, &amp;quot;#2ecc71&amp;quot;, &amp;quot;#b05b6f&amp;quot;, &amp;quot;#008080&amp;quot;]
+yoffset = 0
+i = 0
+for conf in pcdf_confs_grouped_counts.index:
+    ax.scatter(x=pcdf_confs_grouped_counts.columns, 
+                y=np.array([0]*len(pcdf_confs_grouped_counts.columns)) + yoffset, 
+                s=pcdf_confs_grouped_counts.loc[conf, :]*70, color=plot_colors[i])
+    ylabel_ticks.append(yoffset)
+    ylabel_list.append(conf)
+    yoffset += 5
+    i += 1
+    
+ax.set_yticks(ylabel_ticks)
+ax.set_yticklabels(ylabel_list)
+ax.set_xticks(xlabel_ticks)  
+ax.set_xticklabels(xlabel_list)  
+plt.xlabel(&#39;Year&#39;)
+plt.title(&amp;quot;Publication Count for Conferences&amp;quot;)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;fig3.png&#34; /&gt;
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;Clearly, the IEEE International Symposium on Information Theory (ISIT) seems to be the most popular conference for publishing polar code papers followed by the IEEE Information Theory Workshop (ITW) and the IEEE International Conference on Communications (ICC). We also see that the data for 2015 is incomplete as the ISIT-2015 and ICC-2015 conference proceedings are yet to appear on IEEE Xplore and the Allerton conference and GLOBECOM-2015 are yet to happen in October and December 2015 respectively.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Error analysis and inter-cell interference mitigation in multi-level cell flash memories</title>
+      <link>/publication/icc_2015/</link>
+      <pubDate>Mon, 01 Jun 2015 00:00:00 -0700</pubDate>
+      
+      <guid>/publication/icc_2015/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Authors</title>
-      <link>/author/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <title>Polar codes for magnetic recording channels</title>
+      <link>/publication/itw_2015/</link>
+      <pubDate>Fri, 01 May 2015 00:00:00 -0700</pubDate>
       
-      <guid>/author/</guid>
+      <guid>/publication/itw_2015/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Recent &amp; Upcoming Talks</title>
-      <link>/talk/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <title>Adaptive linear programming decoding of polar codes</title>
+      <link>/publication/isit_2014/</link>
+      <pubDate>Fri, 04 Jul 2014 00:00:00 -0700</pubDate>
       
-      <guid>/talk/</guid>
+      <guid>/publication/isit_2014/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>Multipath Fading Channels and 3GPP-LTE Design</title>
+      <link>/post/multipath-fading-channels-and-3gpp-lte-design/</link>
+      <pubDate>Sun, 08 Apr 2012 00:00:00 -0700</pubDate>
+      
+      <guid>/post/multipath-fading-channels-and-3gpp-lte-design/</guid>
+      <description>&lt;p&gt;This article attempts to explain the rationale behind choosing particular parameter values in the design of the 3GPP-LTE standard using the concepts related to the effects of multipath fading channels in wireless communications.&lt;/p&gt;
+
+&lt;p&gt;Multipath fading channels are often defined by four key parameters in the theory of wireless communications. These are the Delay Spread ($T_d$) and the Coherence Bandwidth ($W_c$) defining the multipath characteristics of the wireless channel; the Doppler Spread ($D_s$) and the Coherence Time ($T_c$) defining the fading characteristics of the wireless channel. [1] presents an excellent treatment of these concepts.&lt;/p&gt;
+
+&lt;p&gt;The 3GPP-LTE standard specification [2] defines the system parameters for the OFDMA based physical layer downlink signal. Considering a system of bandwidth 10 MHz, other parameters defined are as follows:&lt;/p&gt;
+
+&lt;p&gt;Sampling Rate: 15.36 MHz&lt;br /&gt;
+FFT Size: 1024&lt;br /&gt;
+Sub-carrier Spacing: 15 KHz&lt;br /&gt;
+Normal mode CP Length: 72 (4.6875 $\mu$s)&lt;br /&gt;
+Duration of one OFDM symbol: ≈ 71.3541 $\mu$s&lt;br /&gt;
+Frequency domain spacing between reference symbol sub-carriers: 6 ($\Delta W$ = 0.09 MHz)&lt;br /&gt;
+Time domain spacing between reference OFDM symbols: 3 or 4; for this analysis, choose 4 ($\Delta T$ ≈ 285.42 $\mu$s)&lt;/p&gt;
+
+&lt;p&gt;The 3GPP-LTE standard specification [3] defines multipath fading channel models to be used in the design and evaluation of an LTE system. For our analysis, let us choose the Extended Typical Urban model (ETU) which has the highest worst case delay spread of $T_d = 5000 ns$ among the models defined. The maximum doppler frequency for the ETU300Hz model is 300 Hz.&lt;/p&gt;
+
+&lt;p&gt;Therefore, the coherence bandwidth $W_c$ is given by [1] $W_c = 12 T_d = 0.1$MHz. Comparing this with $\Delta W$ as defined above, we have $\Delta W &amp;lt; W_c$, that is the spacing of the reference sub-carriers in the frequency domain is less than the coherence bandwidth of the channel and hence we can assume a flat fading channel characteristic for all the sub-carriers between the reference sub-carriers. This implies that the channel estimates obtained using the known reference sub-carriers can also be used for equalization of the other sub-carriers.&lt;/p&gt;
+
+&lt;p&gt;The ISI due to the multipath components of the channel is compensated by the cyclic prefix (CP) and we see that the the CP length in the normal mode (4.6875 $\mu$s) is slightly less than the worst case delay spread (5 $\mu$s). However LTE also supports an extended mode of CP where the length of the CP is 16.67 $\mu$s and this is sufficient to handle the worst case delay spread.&lt;/p&gt;
+
+&lt;p&gt;The doppler spread of the channel model is calculated from the maximum doppler frequency as $ D_s = 300 Hz - (- 300 Hz) = 600 Hz$.
+Therefore, the coherence time $T_c$ is given by [1]&lt;/p&gt;
+
+&lt;p&gt;$$ T_c = \frac{1}{4 D_s} \approx 416.67 \mu s $$&lt;/p&gt;
+
+&lt;p&gt;Comparing this with $\Delta T$ as defined above, we have $\Delta T &amp;lt; T_c$, that is the spacing of the reference symbols in time domain is less than the coherence time of the channel and hence we can assume that the channel does not change during the time interval corresponding to $\Delta T$. This implies that the channel estimates obtained using the known reference symbols can also be used for equalization of the other non-reference OFDM symbols.&lt;/p&gt;
+
+&lt;p&gt;References&lt;/p&gt;
+
+&lt;p&gt;[1]. Tse, D and Viswanath, P. The wireless channel, In: Fundamentals of Wireless Communication. Cambridge University Press, 2005, 10 - 48.&lt;/p&gt;
+
+&lt;p&gt;[2]. 3GPP TS 36.211. Evolved Universal Terrestrial Radio Access (E-UTRA); Physical channels and modulation.&lt;/p&gt;
+
+&lt;p&gt;[3]. 3GPP TS 36.101. Evolved Universal Terrestrial Radio Access (E-UTRA); User Equipment (UE) radio transmission and reception.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Carrier Frequency Offset in Single Carrier and OFDM Systems</title>
+      <link>/post/carrier-frequency-offset-ofdm/</link>
+      <pubDate>Mon, 02 Apr 2012 00:00:00 -0700</pubDate>
+      
+      <guid>/post/carrier-frequency-offset-ofdm/</guid>
+      <description>
+
+&lt;p&gt;Carrier Frequency Offset (CFO) is one of the most common impairments found in a communication system. As the name suggests, it is due to the mismatch between the carrier frequencies used by the transmitter and the receiver. The effects produced by CFO on single carrier and OFDM systems is very different. To illustrate this, a simple simulation of a 64-QAM based single carrier and OFDM system using CommPy is shown below.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from numpy import real, imag, arange
+from numpy.fft import fft, ifft
+from numpy.random import randint
+from commpy.modulation import QAMModem
+from commpy.impairments import add_frequency_offset
+import matplotlib.pyplot as plt
+
+# System Parameters 
+# Sampling Frequency (Hz)
+Fs = 15.36e6 
+# Frequency Offset (Hz)
+delta_f = 500
+# FFT Size for OFDM 
+N = 1024
+
+# Generate message bits
+msg_bits = randint(0, 2, 6144)
+# 64-QAM Modulation of the message bits
+qam64 = QAMModem(64)
+tx_sc_symbols = qam64.modulate(msg_bits)
+# Add Frequency offset to the modulated symbols
+rx_sc_symbols = add_frequency_offset(tx_sc_symbols, Fs, delta_f)
+
+# Ideal 64-QAM constellation
+plt.figure(1)
+plt.plot(real(tx_sc_symbols), imag(tx_sc_symbols), &#39;.b&#39;)
+plt.xlabel(&#39;I-component&#39;)
+plt.ylabel(&#39;Q-component&#39;)
+plt.xticks(arange(-10, 12, 2))
+plt.yticks(arange(-10, 12, 2))
+plt.xlim(-10, 10)
+plt.ylim(-10, 10)
+plt.grid(True)
+
+# 64-QAM constellation for Single Carrier with Frequency offset
+plt.figure(2)
+plt.plot(real(rx_sc_symbols), imag(rx_sc_symbols), &#39;.b&#39;, alpha=0.5)
+plt.xlabel(&#39;I-component&#39;)
+plt.ylabel(&#39;Q-component&#39;)
+plt.xticks(arange(-10, 12, 2))
+plt.yticks(arange(-10, 12, 2))
+plt.xlim(-10, 10)
+plt.ylim(-10, 10)
+plt.grid(True)
+
+# Generate OFDM signal (single symbol) using modulated symbols
+tx_ofdm_waveform = ifft(tx_sc_symbols)
+# Add frequency offset to the OFDM signal
+rx_ofdm_waveform = add_frequency_offset(tx_ofdm_waveform, Fs, delta_f)
+# OFDM Demodulation to extract the 64-QAM symbols
+rx_ofdm_symbols = fft(rx_ofdm_waveform)
+
+# 64-QAM Constellation for OFDM with Frequency offset
+plt.figure(3)
+plt.plot(real(rx_ofdm_symbols), imag(rx_ofdm_symbols), &#39;.b&#39;, alpha=0.6)
+plt.xlabel(&#39;I-component&#39;)
+plt.ylabel(&#39;Q-component&#39;)
+plt.xticks(arange(-10, 12, 2))
+plt.yticks(arange(-10, 12, 2))
+plt.xlim(-10, 10)
+plt.ylim(-10, 10)
+plt.grid(True)
+
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We have to look at the received IQ symbols to study the effect of frequency offset. Shown below are the IQ-constellations generated during the simulation.
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;ideal.png&#34; /&gt;
+
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; class=&#34;numbered&#34;&gt;
+  &lt;h4&gt;A 4-state trellis diagram&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;SC_with_offset.png&#34; /&gt;
+
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; class=&#34;numbered&#34;&gt;
+  &lt;h4&gt;A 4-state trellis diagram&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;OFDM_with_offset.png&#34; /&gt;
+
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; class=&#34;numbered&#34;&gt;
+  &lt;h4&gt;A 4-state trellis diagram&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+As seen from the figures above, the constellation points are rotated by varying amounts in the case of a single carrier system whereas, in the case of an OFDM system the constellation points appear noisy. To answer the question of why this difference in the received constellation, we can do a mathematical analysis of the both the systems as follows.&lt;/p&gt;
+
+&lt;h3 id=&#34;assumptions-and-parameters&#34;&gt;Assumptions and Parameters&lt;/h3&gt;
+
+&lt;p&gt;Ideal System with frequency offset as the only impairment&lt;br /&gt;
+Modulation Scheme : 64-QAM&lt;br /&gt;
+Sampling Frequency ($F_s$) : 15.36 MHz&lt;br /&gt;
+FFT Size in OFDM : 1024 subcarriers&lt;br /&gt;
+Number of Bits : 6144 (equivalent to 1024 64-QAM symbols)&lt;/p&gt;
+
+&lt;h3 id=&#34;single-carrier-system&#34;&gt;Single Carrier System&lt;/h3&gt;
+
+&lt;p&gt;Let us denote, the 64-QAM modulated IQ symbols at the transmitter by $x(n)$, the 64-QAM modulated IQ symbols at the receiver by $r(n)$, the frequency offset (in Hz) introduced by $\Delta f$, the sampling frequency (in Hz) of the system by $F_s$.&lt;/p&gt;
+
+&lt;p&gt;The relationship between $r(n)$ and $x(n)$ is expressed as
+$$ r(n)=x(n) e^{j2\pi \Delta f n F_s} $$
+This can be further modified as
+$$r(n)=A(n)e^{j\theta(n)}e^{j2\pi \Delta fn F_s}$$
+$$r(n)=A(n)e^{j(\theta(n)+j2\pi \Delta f n F_s)}$$
+where $A(n)$ and $\theta(n)$ are the magnitude and the phase of the symbol $x(n)$ respectively. From these equations, it is clear that the frequency offset introduces varying amounts of phase offset depending on the time instant n of the modulated symbol $x(n)$. This explains the varying rotation of the received constellation points observed in Figure 2.&lt;/p&gt;
+
+&lt;h3 id=&#34;ofdm-system&#34;&gt;OFDM System&lt;/h3&gt;
+
+&lt;p&gt;Let us denote, the 64-QAM modulated IQ symbols at the transmitter by $X(k)$, the OFDM signal at the transmitter by $x(n)$, the OFDM signal at the receiver by $r(n)$, the 64-QAM modulated IQ symbols at the receiver by $R(k)$, the frequency offset (in Hz) introduced by $\Delta f$,the sampling frequency (in Hz) of the system by $ F_{s}$ , the sub-carrier spacing (in Hz) of the system by $\Delta f_c$, the number of subcarriers (size of the DFT/IDFT) by $N$.&lt;/p&gt;
+
+&lt;p&gt;The OFDM signal is generated from the modulated symbols using a inverse Discrete Fourier Transform (IDFT) and is given by&lt;/p&gt;
+
+&lt;p&gt;$$ x(n) = \sum_{n=0}^{N-1} X(k)e^{j2\pi k n N} $$&lt;/p&gt;
+
+&lt;p&gt;The relationship between $r(n)$ and $x(n)$ is expressed as&lt;/p&gt;
+
+&lt;p&gt;$$ r(n) = x(n)e^{j2\pi\Delta f n F_s} $$&lt;/p&gt;
+
+&lt;p&gt;From the modulation property of the DFT and noting that $\Delta f_c = \frac{F_s}{N}$, we can express the received 64-QAM modulated symbols as&lt;/p&gt;
+
+&lt;p&gt;$$ R(k) = X\bigg(k−\frac{\Delta f}{\Delta f_c}\bigg) $$&lt;/p&gt;
+
+&lt;p&gt;Thus the effect of the frequency offset is a change in the sampling instants of the modulated symbols. To express $R(k)$ in terms of $X(k)$, we invoke the Sampling theorem as follows. The continuous time representation $x(t)$ is given by,&lt;/p&gt;
+
+&lt;p&gt;$$ x(t) = \sum_{k=-\infty}^{\infty} X(k) \frac{sin(\pi (2Wt−k))}{\pi (2Wt−k)} $$&lt;/p&gt;
+
+&lt;p&gt;where $W$ represents the baseband bandwidth of the signal. Therefore, $R(m)$ is given by&lt;/p&gt;
+
+&lt;p&gt;$$ R(m) = X\bigg(m−\frac{\Delta f}{\Delta f_c}\bigg) $$&lt;/p&gt;
+
+&lt;p&gt;$$ R(m) = \sum_{k=-\infty}^{\infty} X(k)\frac{sin(\pi(\frac{2W}{F_s} (m−\frac{\Delta f}{\Delta f_c})−k))}{\pi(\frac{2W}{F_s} (m−\frac{\Delta f}{\Delta f_c})−k)} $$&lt;/p&gt;
+
+&lt;p&gt;Assuming $F_s = 2W$ to simplify the equation we have,&lt;/p&gt;
+
+&lt;p&gt;$$ R(m) = \sum_{k=-\infty}^{\infty} X(k)\frac{sin(\pi (m−\frac{\Delta f}{\Delta f_c}−k))}{\pi(m−\frac{\Delta f}{\Delta f_c}−k)} $$&lt;/p&gt;
+
+&lt;p&gt;This equation shows us that every received IQ symbol is the sum of scaled versions of all the transmitted IQ symbols, the scaling factor depends on $m$, $k$ and the ratio $\frac{\Delta f}{\Delta f_c}$.&lt;/p&gt;
+
+&lt;p&gt;The key point to note is that every IQ symbol (subcarrier) $X(k)$ is a random variable (assuming the data is random) and hence the received IQ symbol $R(m)$ is a sum of random variables which tends to a Gaussian random variable (by the Central Limit Theorem). This explains the observation in Figure 3, where the IQ constellation points appear to be affected by random noise. Since all the subcarriers interfere with the current subcarrier due to the CFO (loss of orthogonality), the effect of CFO on OFDM systems is commonly known by the term Inter-Carrier Interference (ICI).&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Viterbi Algorithm - Illustrated!</title>
+      <link>/post/viterbi-algorithm-illustrated/</link>
+      <pubDate>Tue, 27 Mar 2012 00:00:00 -0700</pubDate>
+      
+      <guid>/post/viterbi-algorithm-illustrated/</guid>
+      <description>&lt;p&gt;It is often helpful to visualize the operation of the Viterbi Algorithm used in the decoding of convolutional codes. Here is an attempt to do the same using Python, Matplotlib, NumPy, SciPy and CommPy.&lt;/p&gt;
+
+&lt;p&gt;Below is a video which shows one such illustration of the Viterbi Algorithm in action using the following parameters.&lt;/p&gt;
+
+&lt;p&gt;The convolutional code is represented by the encoder matrix,
+$$ G(D)=[1+D^2,1+D+D^2] $$
+Let us assume that the transmitted message is [1, 0, 0, 0] and hence the corresponding codeword is [11, 01, 11, 00]. Also assume that there was a single bit error during the transmission and therefore, let the received codeword be [11, 11, 11, 00]. The Viterbi algorithm operates on this received codeword and recovers the correct codeword [11, 01, 11, 00] as shown below.
+
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;//www.youtube.com/embed/RqpXrw1d19E&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+This animation was generated using Python code. The code along with this example can be found &lt;a href=&#34;https://github.com/veeresht/viterbi-algorithm-animation&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Plotting Trellis Diagrams with CommPy in Python</title>
+      <link>/post/plotting-trellis-diagrams-commpy/</link>
+      <pubDate>Tue, 20 Mar 2012 00:00:00 -0700</pubDate>
+      
+      <guid>/post/plotting-trellis-diagrams-commpy/</guid>
+      <description>&lt;p&gt;A trellis diagram is a representation of a convolutional code. During the study of convolutional and turbo codes, one often encounters situations where we would like to visualize the trellis diagram representation of a simple 4-state or an 8-state convolutional code.&lt;/p&gt;
+
+&lt;p&gt;CommPy is an open source toolkit implementing digital communication algorithms in Python using NumPy,SciPy, Matplotlib and Cython. The visualize function in CommPy&amp;rsquo;s Trellis class is an attempt to make plotting trellis diagrams easy and simple. Here&amp;rsquo;s how to use it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from numpy import array
+from commpy.channelcoding import Trellis
+
+# Define the number of memory elements 
+# per input in the convolutional encoder
+memory = array([2])
+
+# Define the generator matrix of 
+# the convolutional encoder 
+# Entries are in octal format
+g_matrix = array([[05, 07]])
+
+# Create a trellis representation 
+# from the encoder generator matrix 
+trellis = Trellis(memory, g_matrix)
+
+# Specify the number of time steps 
+# in the trellis diagram
+trellis_length = 3
+
+# Specify the order in which states 
+# should appear on the trellis diagram
+state_order = [0, 2, 1, 3]
+
+# Specify the colors for 0, 1 inputs
+# &#39;#FF0000&#39; --&amp;gt; Red   (edge corresponding to input 0)
+# &#39;#00FF00&#39; --&amp;gt; Green (edge corresponding to input 1)
+bit_colors = [&#39;#FF0000&#39;, &#39;#00FF00&#39;] 
+
+# Plot the trellis diagram
+trellis.visualize(trellis_length, state_order, 
+                  edge_colors = bit_colors)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;4_trellis.png&#34; /&gt;
+
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; class=&#34;numbered&#34;&gt;
+  &lt;h4&gt;A 4-state trellis diagram&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+The snippet of code above and the trellis diagram correspond to the convolutional code generated using the encoder matrix,
+$$ G(D)=[1+D^2,1+D+D^2] $$
+The polynomial entries correspond to the octal representations 101 (05) and 111 (07).
+The input/output labels are shown along with the states for the first stage of the trellis and the edge colors depict the output.&lt;/p&gt;
+
+&lt;p&gt;Shown below is another trellis diagram representation of the encoder matrix
+$$ G(D)=[1+D^2+D^3,1+D+D^2+D^3] $$
+
+
+
+&lt;figure&gt;
+
+&lt;img src=&#34;8_trellis.png&#34; /&gt;
+
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; class=&#34;numbered&#34;&gt;
+  &lt;h4&gt;An 8-state trellis diagram&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Homes on Veeresh Taranalli</title>
@@ -27,7 +27,8 @@
       
       <guid>/home/hero/</guid>
       <description>The Best Way to Create the Website You Want from Markdown (or RStudio/Jupyter)
-Build Anything with Widgets</description>
+Build Anything with Widgets
+Star</description>
     </item>
     
     <item>
@@ -39,8 +40,9 @@ Build Anything with Widgets</description>
       <description>Welcome to the personal demo of Academic. Other demos available include:
  Project Demo (Academic&amp;rsquo;s actual site)  Over 100,000 Amazing Websites have Already Been Built with Academic
 Join the Most Empowered Hugo Community
-This homepage section is an example of adding elements to the Blank widget.
-Backgrounds can be applied to any section. Here, the background option is set give an image parallax effect.</description>
+ This homepage section is an example of adding elements to the Blank widget.
+Backgrounds can be applied to any section. Here, the background option is set give an image parallax effect.
+  </description>
     </item>
     
     <item>
@@ -130,7 +132,8 @@ Backgrounds can be applied to any section. Here, the background option is set gi
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/home/publications/</guid>
-      <description></description>
+      <description> Quickly discover relevant content by filtering publications.
+  -- </description>
     </item>
     
     <item>

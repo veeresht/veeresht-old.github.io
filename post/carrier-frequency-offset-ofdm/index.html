@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 4.1.0">
-  <meta name="generator" content="Hugo 0.68.3" />
+  <meta name="generator" content="Hugo 0.53" />
 
   
 
@@ -395,72 +395,77 @@
   <div class="article-container">
 
     <div class="article-style" itemprop="articleBody">
-      <p>Carrier Frequency Offset (CFO) is one of the most common impairments found in a communication system. As the name suggests, it is due to the mismatch between the carrier frequencies used by the transmitter and the receiver. The effects produced by CFO on single carrier and OFDM systems is very different. To illustrate this, a simple simulation of a 64-QAM based single carrier and OFDM system using CommPy is shown below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> real, imag, arange
-<span style="color:#f92672">from</span> numpy.fft <span style="color:#f92672">import</span> fft, ifft
-<span style="color:#f92672">from</span> numpy.random <span style="color:#f92672">import</span> randint
-<span style="color:#f92672">from</span> commpy.modulation <span style="color:#f92672">import</span> QAMModem
-<span style="color:#f92672">from</span> commpy.impairments <span style="color:#f92672">import</span> add_frequency_offset
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+      
 
-<span style="color:#75715e"># System Parameters </span>
-<span style="color:#75715e"># Sampling Frequency (Hz)</span>
-Fs <span style="color:#f92672">=</span> <span style="color:#ae81ff">15.36e6</span> 
-<span style="color:#75715e"># Frequency Offset (Hz)</span>
-delta_f <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>
-<span style="color:#75715e"># FFT Size for OFDM </span>
-N <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024</span>
+<p>Carrier Frequency Offset (CFO) is one of the most common impairments found in a communication system. As the name suggests, it is due to the mismatch between the carrier frequencies used by the transmitter and the receiver. The effects produced by CFO on single carrier and OFDM systems is very different. To illustrate this, a simple simulation of a 64-QAM based single carrier and OFDM system using CommPy is shown below.</p>
 
-<span style="color:#75715e"># Generate message bits</span>
-msg_bits <span style="color:#f92672">=</span> randint(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6144</span>)
-<span style="color:#75715e"># 64-QAM Modulation of the message bits</span>
-qam64 <span style="color:#f92672">=</span> QAMModem(<span style="color:#ae81ff">64</span>)
-tx_sc_symbols <span style="color:#f92672">=</span> qam64<span style="color:#f92672">.</span>modulate(msg_bits)
-<span style="color:#75715e"># Add Frequency offset to the modulated symbols</span>
-rx_sc_symbols <span style="color:#f92672">=</span> add_frequency_offset(tx_sc_symbols, Fs, delta_f)
+<pre><code class="language-python">from numpy import real, imag, arange
+from numpy.fft import fft, ifft
+from numpy.random import randint
+from commpy.modulation import QAMModem
+from commpy.impairments import add_frequency_offset
+import matplotlib.pyplot as plt
 
-<span style="color:#75715e"># Ideal 64-QAM constellation</span>
-plt<span style="color:#f92672">.</span>figure(<span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>plot(real(tx_sc_symbols), imag(tx_sc_symbols), <span style="color:#e6db74">&#39;.b&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;I-component&#39;</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Q-component&#39;</span>)
-plt<span style="color:#f92672">.</span>xticks(arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">2</span>))
-plt<span style="color:#f92672">.</span>yticks(arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">2</span>))
-plt<span style="color:#f92672">.</span>xlim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
-plt<span style="color:#f92672">.</span>ylim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
-plt<span style="color:#f92672">.</span>grid(True)
+# System Parameters 
+# Sampling Frequency (Hz)
+Fs = 15.36e6 
+# Frequency Offset (Hz)
+delta_f = 500
+# FFT Size for OFDM 
+N = 1024
 
-<span style="color:#75715e"># 64-QAM constellation for Single Carrier with Frequency offset</span>
-plt<span style="color:#f92672">.</span>figure(<span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>plot(real(rx_sc_symbols), imag(rx_sc_symbols), <span style="color:#e6db74">&#39;.b&#39;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;I-component&#39;</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Q-component&#39;</span>)
-plt<span style="color:#f92672">.</span>xticks(arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">2</span>))
-plt<span style="color:#f92672">.</span>yticks(arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">2</span>))
-plt<span style="color:#f92672">.</span>xlim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
-plt<span style="color:#f92672">.</span>ylim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
-plt<span style="color:#f92672">.</span>grid(True)
+# Generate message bits
+msg_bits = randint(0, 2, 6144)
+# 64-QAM Modulation of the message bits
+qam64 = QAMModem(64)
+tx_sc_symbols = qam64.modulate(msg_bits)
+# Add Frequency offset to the modulated symbols
+rx_sc_symbols = add_frequency_offset(tx_sc_symbols, Fs, delta_f)
 
-<span style="color:#75715e"># Generate OFDM signal (single symbol) using modulated symbols</span>
-tx_ofdm_waveform <span style="color:#f92672">=</span> ifft(tx_sc_symbols)
-<span style="color:#75715e"># Add frequency offset to the OFDM signal</span>
-rx_ofdm_waveform <span style="color:#f92672">=</span> add_frequency_offset(tx_ofdm_waveform, Fs, delta_f)
-<span style="color:#75715e"># OFDM Demodulation to extract the 64-QAM symbols</span>
-rx_ofdm_symbols <span style="color:#f92672">=</span> fft(rx_ofdm_waveform)
+# Ideal 64-QAM constellation
+plt.figure(1)
+plt.plot(real(tx_sc_symbols), imag(tx_sc_symbols), '.b')
+plt.xlabel('I-component')
+plt.ylabel('Q-component')
+plt.xticks(arange(-10, 12, 2))
+plt.yticks(arange(-10, 12, 2))
+plt.xlim(-10, 10)
+plt.ylim(-10, 10)
+plt.grid(True)
 
-<span style="color:#75715e"># 64-QAM Constellation for OFDM with Frequency offset</span>
-plt<span style="color:#f92672">.</span>figure(<span style="color:#ae81ff">3</span>)
-plt<span style="color:#f92672">.</span>plot(real(rx_ofdm_symbols), imag(rx_ofdm_symbols), <span style="color:#e6db74">&#39;.b&#39;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.6</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;I-component&#39;</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Q-component&#39;</span>)
-plt<span style="color:#f92672">.</span>xticks(arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">2</span>))
-plt<span style="color:#f92672">.</span>yticks(arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">2</span>))
-plt<span style="color:#f92672">.</span>xlim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
-plt<span style="color:#f92672">.</span>ylim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
-plt<span style="color:#f92672">.</span>grid(True)
+# 64-QAM constellation for Single Carrier with Frequency offset
+plt.figure(2)
+plt.plot(real(rx_sc_symbols), imag(rx_sc_symbols), '.b', alpha=0.5)
+plt.xlabel('I-component')
+plt.ylabel('Q-component')
+plt.xticks(arange(-10, 12, 2))
+plt.yticks(arange(-10, 12, 2))
+plt.xlim(-10, 10)
+plt.ylim(-10, 10)
+plt.grid(True)
 
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p>We have to look at the received IQ symbols to study the effect of frequency offset. Shown below are the IQ-constellations generated during the simulation.
+# Generate OFDM signal (single symbol) using modulated symbols
+tx_ofdm_waveform = ifft(tx_sc_symbols)
+# Add frequency offset to the OFDM signal
+rx_ofdm_waveform = add_frequency_offset(tx_ofdm_waveform, Fs, delta_f)
+# OFDM Demodulation to extract the 64-QAM symbols
+rx_ofdm_symbols = fft(rx_ofdm_waveform)
+
+# 64-QAM Constellation for OFDM with Frequency offset
+plt.figure(3)
+plt.plot(real(rx_ofdm_symbols), imag(rx_ofdm_symbols), '.b', alpha=0.6)
+plt.xlabel('I-component')
+plt.ylabel('Q-component')
+plt.xticks(arange(-10, 12, 2))
+plt.yticks(arange(-10, 12, 2))
+plt.xlim(-10, 10)
+plt.ylim(-10, 10)
+plt.grid(True)
+
+plt.show()
+</code></pre>
+
+<p>We have to look at the received IQ symbols to study the effect of frequency offset. Shown below are the IQ-constellations generated during the simulation.
 
 
 
@@ -507,36 +512,58 @@ plt<span style="color:#f92672">.</span>show()
 
 </figure>
 As seen from the figures above, the constellation points are rotated by varying amounts in the case of a single carrier system whereas, in the case of an OFDM system the constellation points appear noisy. To answer the question of why this difference in the received constellation, we can do a mathematical analysis of the both the systems as follows.</p>
+
 <h3 id="assumptions-and-parameters">Assumptions and Parameters</h3>
-<p>Ideal System with frequency offset as the only impairment<br>
-Modulation Scheme : 64-QAM<br>
-Sampling Frequency ($F_s$) : 15.36 MHz<br>
-FFT Size in OFDM : 1024 subcarriers<br>
+
+<p>Ideal System with frequency offset as the only impairment<br />
+Modulation Scheme : 64-QAM<br />
+Sampling Frequency ($F_s$) : 15.36 MHz<br />
+FFT Size in OFDM : 1024 subcarriers<br />
 Number of Bits : 6144 (equivalent to 1024 64-QAM symbols)</p>
+
 <h3 id="single-carrier-system">Single Carrier System</h3>
+
 <p>Let us denote, the 64-QAM modulated IQ symbols at the transmitter by $x(n)$, the 64-QAM modulated IQ symbols at the receiver by $r(n)$, the frequency offset (in Hz) introduced by $\Delta f$, the sampling frequency (in Hz) of the system by $F_s$.</p>
+
 <p>The relationship between $r(n)$ and $x(n)$ is expressed as
 $$ r(n)=x(n) e^{j2\pi \Delta f n F_s} $$
 This can be further modified as
 $$r(n)=A(n)e^{j\theta(n)}e^{j2\pi \Delta fn F_s}$$
 $$r(n)=A(n)e^{j(\theta(n)+j2\pi \Delta f n F_s)}$$
 where $A(n)$ and $\theta(n)$ are the magnitude and the phase of the symbol $x(n)$ respectively. From these equations, it is clear that the frequency offset introduces varying amounts of phase offset depending on the time instant n of the modulated symbol $x(n)$. This explains the varying rotation of the received constellation points observed in Figure 2.</p>
+
 <h3 id="ofdm-system">OFDM System</h3>
+
 <p>Let us denote, the 64-QAM modulated IQ symbols at the transmitter by $X(k)$, the OFDM signal at the transmitter by $x(n)$, the OFDM signal at the receiver by $r(n)$, the 64-QAM modulated IQ symbols at the receiver by $R(k)$, the frequency offset (in Hz) introduced by $\Delta f$,the sampling frequency (in Hz) of the system by $ F_{s}$ , the sub-carrier spacing (in Hz) of the system by $\Delta f_c$, the number of subcarriers (size of the DFT/IDFT) by $N$.</p>
+
 <p>The OFDM signal is generated from the modulated symbols using a inverse Discrete Fourier Transform (IDFT) and is given by</p>
+
 <p>$$ x(n) = \sum_{n=0}^{N-1} X(k)e^{j2\pi k n N} $$</p>
+
 <p>The relationship between $r(n)$ and $x(n)$ is expressed as</p>
+
 <p>$$ r(n) = x(n)e^{j2\pi\Delta f n F_s} $$</p>
+
 <p>From the modulation property of the DFT and noting that $\Delta f_c = \frac{F_s}{N}$, we can express the received 64-QAM modulated symbols as</p>
+
 <p>$$ R(k) = X\bigg(k−\frac{\Delta f}{\Delta f_c}\bigg) $$</p>
+
 <p>Thus the effect of the frequency offset is a change in the sampling instants of the modulated symbols. To express $R(k)$ in terms of $X(k)$, we invoke the Sampling theorem as follows. The continuous time representation $x(t)$ is given by,</p>
+
 <p>$$ x(t) = \sum_{k=-\infty}^{\infty} X(k) \frac{sin(\pi (2Wt−k))}{\pi (2Wt−k)} $$</p>
+
 <p>where $W$ represents the baseband bandwidth of the signal. Therefore, $R(m)$ is given by</p>
+
 <p>$$ R(m) = X\bigg(m−\frac{\Delta f}{\Delta f_c}\bigg) $$</p>
+
 <p>$$ R(m) = \sum_{k=-\infty}^{\infty} X(k)\frac{sin(\pi(\frac{2W}{F_s} (m−\frac{\Delta f}{\Delta f_c})−k))}{\pi(\frac{2W}{F_s} (m−\frac{\Delta f}{\Delta f_c})−k)} $$</p>
+
 <p>Assuming $F_s = 2W$ to simplify the equation we have,</p>
+
 <p>$$ R(m) = \sum_{k=-\infty}^{\infty} X(k)\frac{sin(\pi (m−\frac{\Delta f}{\Delta f_c}−k))}{\pi(m−\frac{\Delta f}{\Delta f_c}−k)} $$</p>
+
 <p>This equation shows us that every received IQ symbol is the sum of scaled versions of all the transmitted IQ symbols, the scaling factor depends on $m$, $k$ and the ratio $\frac{\Delta f}{\Delta f_c}$.</p>
+
 <p>The key point to note is that every IQ symbol (subcarrier) $X(k)$ is a random variable (assuming the data is random) and hence the received IQ symbol $R(m)$ is a sum of random variables which tends to a Gaussian random variable (by the Central Limit Theorem). This explains the observation in Figure 3, where the IQ constellation points appear to be affected by random noise. Since all the subcarriers interfere with the current subcarrier due to the CFO (loss of orthogonality), the effect of CFO on OFDM systems is commonly known by the term Inter-Carrier Interference (ICI).</p>
 
     </div>
@@ -719,7 +746,7 @@ where $A(n)$ and $\theta(n)$ are the magnitude and the phase of the symbol $x(n)
   
 
   <p class="powered-by">
-    © Veeresh Taranalli &middot; 
+    &copy; Veeresh Taranalli &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
@@ -837,7 +864,7 @@ where $A(n)$ and $\theta(n)$ are the magnitude and the phase of the symbol $x(n)
     
     
     
-    <script src="/js/academic.min.59444117f1957a46872930c49af65e4d.js"></script>
+    <script src="/js/academic.min.76a41a243fcea75defe7d35a07d3aaa3.js"></script>
 
   </body>
 </html>
