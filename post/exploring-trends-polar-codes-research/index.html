@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 4.1.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.68.3" />
 
   
 
@@ -399,91 +399,73 @@ This post also serves as a tutorial in exploratory data analysis using Python an
   <div class="article-container">
 
     <div class="article-style" itemprop="articleBody">
-      
-
-<p>Polar codes are easily the most significant recent development in the areas of coding and information theory research. A wide variety of applications have been proposed for polar codes mainly due to their capacity achieving property for many different communication channels.</p>
-
+      <p>Polar codes are easily the most significant recent development in the areas of coding and information theory research. A wide variety of applications have been proposed for polar codes mainly due to their capacity achieving property for many different communication channels.</p>
 <p>In this post, we explore the trends in research publications on the topic of polar codes in their brief but exciting history.</p>
-
 <p>This post also serves as a tutorial in exploratory data analysis using Python and Pandas along with Matplotlib for plotting.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%</span>matplotlib inline
 
-<pre><code class="language-python">%matplotlib inline
+<span style="color:#f92672">import</span> matplotlib
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+matplotlib<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#39;ggplot&#39;</span>)
 
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.style.use('ggplot')
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> re
 
-import numpy as np
-import pandas as pd
-import re
+<span style="color:#75715e"># Make the graphs a bit prettier, and bigger</span>
+pd<span style="color:#f92672">.</span>set_option(<span style="color:#e6db74">&#39;display.mpl_style&#39;</span>, <span style="color:#e6db74">&#39;default&#39;</span>) 
 
-# Make the graphs a bit prettier, and bigger
-pd.set_option('display.mpl_style', 'default') 
+matplotlib<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.size&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">14.0</span>
+matplotlib<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.sans-serif&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Avant Garde&#39;</span>
+matplotlib<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;xtick.labelsize&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;large&#39;</span>
+matplotlib<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;ytick.labelsize&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;large&#39;</span>
 
-matplotlib.rcParams['font.size'] = 14.0
-matplotlib.rcParams['font.sans-serif'] = 'Avant Garde'
-matplotlib.rcParams['xtick.labelsize'] = 'large'
-matplotlib.rcParams['ytick.labelsize'] = 'large'
-
-# Other Pandas options
-pd.set_option('display.width', 5000) 
-pd.set_option('display.max_columns', 60) 
-pd.options.mode.chained_assignment = None
-</code></pre>
-
-<h3 id="data-collection-and-cleaning">Data Collection and Cleaning</h3>
-
+<span style="color:#75715e"># Other Pandas options</span>
+pd<span style="color:#f92672">.</span>set_option(<span style="color:#e6db74">&#39;display.width&#39;</span>, <span style="color:#ae81ff">5000</span>) 
+pd<span style="color:#f92672">.</span>set_option(<span style="color:#e6db74">&#39;display.max_columns&#39;</span>, <span style="color:#ae81ff">60</span>) 
+pd<span style="color:#f92672">.</span>options<span style="color:#f92672">.</span>mode<span style="color:#f92672">.</span>chained_assignment <span style="color:#f92672">=</span> None
+</code></pre></div><h3 id="data-collection-and-cleaning">Data Collection and Cleaning</h3>
 <p>For our analysis, it is sufficient to work with research publication citation data which is available from IEEE Xplore. We download the data using two search strings &ldquo;polar codes&rdquo; and &ldquo;channel polarization&rdquo;.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Read raw data from IEEE Xplore using search strings </span>
+<span style="color:#75715e"># &#39;polar codes&#39; and &#39;channel polarization&#39;</span>
+pcdf1 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;ieee_data/polar_codes_export2015.08.29-15.43.27.csv&#39;</span>, 
+                    skiprows <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+pcdf2 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;ieee_data/channel_polarization_export2015.08.29-15.55.28.csv&#39;</span>,
+                    skiprows <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
 
-<pre><code class="language-python"># Read raw data from IEEE Xplore using search strings 
-# 'polar codes' and 'channel polarization'
-pcdf1 = pd.read_csv('ieee_data/polar_codes_export2015.08.29-15.43.27.csv', 
-                    skiprows = 1)
-pcdf2 = pd.read_csv('ieee_data/channel_polarization_export2015.08.29-15.55.28.csv',
-                    skiprows = 1)
+<span style="color:#75715e"># Merge the two data frames</span>
+pcdf <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([pcdf1, pcdf2], ignore_index <span style="color:#f92672">=</span> True)
 
-# Merge the two data frames
-pcdf = pd.concat([pcdf1, pcdf2], ignore_index = True)
+<span style="color:#75715e"># Rename columns to remove spaces in column names</span>
+pcdf<span style="color:#f92672">.</span>rename(columns<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39; &#39;</span>, <span style="color:#e6db74">&#39;_&#39;</span>), inplace<span style="color:#f92672">=</span>True)
 
-# Rename columns to remove spaces in column names
-pcdf.rename(columns=lambda x: x.replace(' ', '_'), inplace=True)
+<span style="color:#75715e"># Remove duplicate rows from the merged data frame</span>
+pcdf <span style="color:#f92672">=</span> pcdf<span style="color:#f92672">.</span>drop_duplicates()
+</code></pre></div><p>However, the set of publications obtained is not entirely clean and there are some papers with the word &ldquo;polarization&rdquo; in their titles or abstracts that show up in our dataset but are not related to polar codes. We can clean them up using regular expression based filtering as follows. We also know that polar codes were invented in the year 2008 and hence can safely eliminate any papers with a publication date earlier than 2008.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Construct a regex string to filter entries in the data frame</span>
+<span style="color:#75715e"># not related to polar codes</span>
+polar_codes_regex_str <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;([pP]olar [cC]odes)|([cC]hannel [pP]olarization)|&#39;</span>
+                         <span style="color:#e6db74">&#39;[rR]ate.*[pP]olarization|[pP]olarized.*[cC]hannels|&#39;</span>
+                         <span style="color:#e6db74">&#39;[cC]hannels.*[pP]olarized&#39;</span>)
+relevant_titles <span style="color:#f92672">=</span> pcdf<span style="color:#f92672">.</span>Document_Title<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>contains(polar_codes_regex_str, 
+                                flags<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>IGNORECASE, regex<span style="color:#f92672">=</span>True, na<span style="color:#f92672">=</span>False)
+pcdf <span style="color:#f92672">=</span> pcdf[relevant_titles]
 
-# Remove duplicate rows from the merged data frame
-pcdf = pcdf.drop_duplicates()
-</code></pre>
-
-<p>However, the set of publications obtained is not entirely clean and there are some papers with the word &ldquo;polarization&rdquo; in their titles or abstracts that show up in our dataset but are not related to polar codes. We can clean them up using regular expression based filtering as follows. We also know that polar codes were invented in the year 2008 and hence can safely eliminate any papers with a publication date earlier than 2008.</p>
-
-<pre><code class="language-python"># Construct a regex string to filter entries in the data frame
-# not related to polar codes
-polar_codes_regex_str = ('([pP]olar [cC]odes)|([cC]hannel [pP]olarization)|'
-                         '[rR]ate.*[pP]olarization|[pP]olarized.*[cC]hannels|'
-                         '[cC]hannels.*[pP]olarized')
-relevant_titles = pcdf.Document_Title.str.contains(polar_codes_regex_str, 
-                                flags=re.IGNORECASE, regex=True, na=False)
-pcdf = pcdf[relevant_titles]
-
-# Remove entries from earlier than 2008 as we know 
-# polar codes were invented in 2008.
-pcdf = pcdf[pcdf['Year'] &gt;= 2008]
-</code></pre>
-
-<h3 id="exploratory-data-analysis">Exploratory Data Analysis</h3>
-
+<span style="color:#75715e"># Remove entries from earlier than 2008 as we know </span>
+<span style="color:#75715e"># polar codes were invented in 2008.</span>
+pcdf <span style="color:#f92672">=</span> pcdf[pcdf[<span style="color:#e6db74">&#39;Year&#39;</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">2008</span>]
+</code></pre></div><h3 id="exploratory-data-analysis">Exploratory Data Analysis</h3>
 <p>As a first step, we can simply look at the total number of papers published on polar codes in every year as follows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Study the total number of &#39;polar code&#39; publications with years </span>
+pub_counts_per_year <span style="color:#f92672">=</span> pcdf[<span style="color:#e6db74">&#39;Year&#39;</span>]<span style="color:#f92672">.</span>value_counts(sort <span style="color:#f92672">=</span> False)
 
-<pre><code class="language-python"># Study the total number of 'polar code' publications with years 
-pub_counts_per_year = pcdf['Year'].value_counts(sort = False)
-
-fig_1 = plt.figure(figsize=[15, 5])
-pub_counts_per_year.plot(kind='bar')
-plt.xlabel('Year')
-plt.ylabel('Number of Publications')
-plt.title(&quot;Total Publications on Polar Codes&quot;)
-plt.show()
-</code></pre>
-
-
+fig_1 <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>[<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">5</span>])
+pub_counts_per_year<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bar&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Year&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of Publications&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Total Publications on Polar Codes&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div>
 
 
 <figure>
@@ -492,34 +474,29 @@ plt.show()
 
 
 </figure>
-
 <p>From the plot above, it very exciting to see that polar code research has been growing steadily since 2012 with the last year of 2014 recording well over 70 publications. The number of publications in 2015 seems a bit low however, the publications from recent conferences in 2015 such as ISIT and ICC are yet to appear on IEEE Xplore.</p>
-
 <p>Next we look at the type of publications in our dataset. In our analysis, we want to focus on IEEE Conference or Journal publications. We look at the total number of IEEE Conference and IEEE Journal publications in every year as follows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">pcdf_grouped <span style="color:#f92672">=</span> pcdf<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Document_Identifier&#39;</span>)
+pub_counts_per_year_2 <span style="color:#f92672">=</span> pcdf_grouped[<span style="color:#e6db74">&#39;Year&#39;</span>]<span style="color:#f92672">.</span>value_counts(sort <span style="color:#f92672">=</span> False)
+pub_counts_per_year_conf <span style="color:#f92672">=</span> pub_counts_per_year_2[<span style="color:#e6db74">&#39;IEEE Conference Publications&#39;</span>]
+pub_counts_per_year_journal <span style="color:#f92672">=</span> pub_counts_per_year_2[<span style="color:#e6db74">&#39;IEEE Journals &amp; Magazines&#39;</span>]
 
-<pre><code class="language-python">pcdf_grouped = pcdf.groupby('Document_Identifier')
-pub_counts_per_year_2 = pcdf_grouped['Year'].value_counts(sort = False)
-pub_counts_per_year_conf = pub_counts_per_year_2['IEEE Conference Publications']
-pub_counts_per_year_journal = pub_counts_per_year_2['IEEE Journals &amp; Magazines']
+fig_2 <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>[<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">5</span>])
 
-fig_2 = plt.figure(figsize=[15, 5])
+plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">121</span>)
+pub_counts_per_year_conf<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bar&#39;</span>)
+plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">50</span>])
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Year&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of Publications&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;IEEE Conferences&#39;</span>)
 
-plt.subplot(121)
-pub_counts_per_year_conf.plot(kind='bar')
-plt.ylim([0, 50])
-plt.xlabel('Year')
-plt.ylabel('Number of Publications')
-plt.title('IEEE Conferences')
-
-plt.subplot(122)
-pub_counts_per_year_journal.plot(kind='bar')
-plt.ylim([0, 50])
-plt.xlabel('Year')
-plt.title('IEEE Journals')
-plt.show()
-</code></pre>
-
-
+plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">122</span>)
+pub_counts_per_year_journal<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bar&#39;</span>)
+plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">50</span>])
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Year&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;IEEE Journals&#39;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div>
 
 
 <figure>
@@ -528,63 +505,58 @@ plt.show()
 
 
 </figure>
-
 <p>Clearly, the conference papers outnumber the journal publications by a significant margin and this is expected. The year 2013 seems to represent a peak in journal publications but it is difficult to conclude much as one must keep in mind the large turnaround times for journal publication reviews.</p>
-
 <p>As IEEE conference publications make up most of the polar code publications in the dataset, one would be interested in knowing which conferences are popular venues for presenting polar code research. For this we can create a scatter plot as follows using knowledge of 8 popular IEEE conferences in information theory and coding theory research which are ISIT, ITW, Allerton, ICC, ICNC, WCNC, GLOBECOM, and Asilomar conferences.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Study the publication counts grouped by major IEEE conferences in every year</span>
+pcdf_confs <span style="color:#f92672">=</span> pcdf[pcdf[<span style="color:#e6db74">&#39;Document_Identifier&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;IEEE Conference Publications&#39;</span>]
+unique_confs <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>unique(pcdf_confs<span style="color:#f92672">.</span>Publication_Title<span style="color:#f92672">.</span>ravel())
 
-<pre><code class="language-python"># Study the publication counts grouped by major IEEE conferences in every year
-pcdf_confs = pcdf[pcdf['Document_Identifier'] == 'IEEE Conference Publications']
-unique_confs = pd.unique(pcdf_confs.Publication_Title.ravel())
-
-conf_names = ['ISIT', 'ITW', 'Allerton', 'ICC', 'ICNC', \
-              'WCNC', 'GLOBECOM', 'Asilomar']
+conf_names <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;ISIT&#39;</span>, <span style="color:#e6db74">&#39;ITW&#39;</span>, <span style="color:#e6db74">&#39;Allerton&#39;</span>, <span style="color:#e6db74">&#39;ICC&#39;</span>, <span style="color:#e6db74">&#39;ICNC&#39;</span>, \
+              <span style="color:#e6db74">&#39;WCNC&#39;</span>, <span style="color:#e6db74">&#39;GLOBECOM&#39;</span>, <span style="color:#e6db74">&#39;Asilomar&#39;</span>]
     
-def get_conf_name(x, conf_names):
-    is_conf = np.array([y in x for y in conf_names])
-    if np.sum(is_conf):
-        return conf_names[np.arange(len(conf_names))[is_conf]]
-    else:
-        return ''
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_conf_name</span>(x, conf_names):
+    is_conf <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([y <span style="color:#f92672">in</span> x <span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> conf_names])
+    <span style="color:#66d9ef">if</span> np<span style="color:#f92672">.</span>sum(is_conf):
+        <span style="color:#66d9ef">return</span> conf_names[np<span style="color:#f92672">.</span>arange(len(conf_names))[is_conf]]
+    <span style="color:#66d9ef">else</span>:
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;&#39;</span>
     
-pcdf_confs['IEEE_Conference'] = \
-        pcdf_confs['Publication_Title'].map(lambda x: get_conf_name(x, conf_names)) 
+pcdf_confs[<span style="color:#e6db74">&#39;IEEE_Conference&#39;</span>] <span style="color:#f92672">=</span> \
+        pcdf_confs[<span style="color:#e6db74">&#39;Publication_Title&#39;</span>]<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> x: get_conf_name(x, conf_names)) 
     
-pcdf_confs_grouped = pcdf_confs.groupby('IEEE_Conference')
-pcdf_confs_grouped_counts = pcdf_confs_grouped['Year'].value_counts(sort = False)
-pcdf_confs_grouped_counts = pcdf_confs_grouped_counts.unstack(-1)
-pcdf_confs_grouped_counts = pcdf_confs_grouped_counts.fillna(0)
-pcdf_confs_grouped_counts = pcdf_confs_grouped_counts[1:]
+pcdf_confs_grouped <span style="color:#f92672">=</span> pcdf_confs<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;IEEE_Conference&#39;</span>)
+pcdf_confs_grouped_counts <span style="color:#f92672">=</span> pcdf_confs_grouped[<span style="color:#e6db74">&#39;Year&#39;</span>]<span style="color:#f92672">.</span>value_counts(sort <span style="color:#f92672">=</span> False)
+pcdf_confs_grouped_counts <span style="color:#f92672">=</span> pcdf_confs_grouped_counts<span style="color:#f92672">.</span>unstack(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+pcdf_confs_grouped_counts <span style="color:#f92672">=</span> pcdf_confs_grouped_counts<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>)
+pcdf_confs_grouped_counts <span style="color:#f92672">=</span> pcdf_confs_grouped_counts[<span style="color:#ae81ff">1</span>:]
 
-fig_3 = plt.figure(figsize=[15, 5])
-ax = plt.subplot(111)
-ylabel_list = []
-ylabel_ticks = []
-xlabel_list = [str(x) for x in pcdf_confs_grouped_counts.columns]
-xlabel_ticks = [int(x) for x in pcdf_confs_grouped_counts.columns]
-plot_colors = [&quot;#9b59b6&quot;, &quot;#3498db&quot;, &quot;#95a5a6&quot;, &quot;#e74c3c&quot;, \
-               &quot;#34495e&quot;, &quot;#2ecc71&quot;, &quot;#b05b6f&quot;, &quot;#008080&quot;]
-yoffset = 0
-i = 0
-for conf in pcdf_confs_grouped_counts.index:
-    ax.scatter(x=pcdf_confs_grouped_counts.columns, 
-                y=np.array([0]*len(pcdf_confs_grouped_counts.columns)) + yoffset, 
-                s=pcdf_confs_grouped_counts.loc[conf, :]*70, color=plot_colors[i])
-    ylabel_ticks.append(yoffset)
-    ylabel_list.append(conf)
-    yoffset += 5
-    i += 1
+fig_3 <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>[<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">5</span>])
+ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">111</span>)
+ylabel_list <span style="color:#f92672">=</span> []
+ylabel_ticks <span style="color:#f92672">=</span> []
+xlabel_list <span style="color:#f92672">=</span> [str(x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pcdf_confs_grouped_counts<span style="color:#f92672">.</span>columns]
+xlabel_ticks <span style="color:#f92672">=</span> [int(x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pcdf_confs_grouped_counts<span style="color:#f92672">.</span>columns]
+plot_colors <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;#9b59b6&#34;</span>, <span style="color:#e6db74">&#34;#3498db&#34;</span>, <span style="color:#e6db74">&#34;#95a5a6&#34;</span>, <span style="color:#e6db74">&#34;#e74c3c&#34;</span>, \
+               <span style="color:#e6db74">&#34;#34495e&#34;</span>, <span style="color:#e6db74">&#34;#2ecc71&#34;</span>, <span style="color:#e6db74">&#34;#b05b6f&#34;</span>, <span style="color:#e6db74">&#34;#008080&#34;</span>]
+yoffset <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">for</span> conf <span style="color:#f92672">in</span> pcdf_confs_grouped_counts<span style="color:#f92672">.</span>index:
+    ax<span style="color:#f92672">.</span>scatter(x<span style="color:#f92672">=</span>pcdf_confs_grouped_counts<span style="color:#f92672">.</span>columns, 
+                y<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>array([<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>len(pcdf_confs_grouped_counts<span style="color:#f92672">.</span>columns)) <span style="color:#f92672">+</span> yoffset, 
+                s<span style="color:#f92672">=</span>pcdf_confs_grouped_counts<span style="color:#f92672">.</span>loc[conf, :]<span style="color:#f92672">*</span><span style="color:#ae81ff">70</span>, color<span style="color:#f92672">=</span>plot_colors[i])
+    ylabel_ticks<span style="color:#f92672">.</span>append(yoffset)
+    ylabel_list<span style="color:#f92672">.</span>append(conf)
+    yoffset <span style="color:#f92672">+=</span> <span style="color:#ae81ff">5</span>
+    i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
     
-ax.set_yticks(ylabel_ticks)
-ax.set_yticklabels(ylabel_list)
-ax.set_xticks(xlabel_ticks)  
-ax.set_xticklabels(xlabel_list)  
-plt.xlabel('Year')
-plt.title(&quot;Publication Count for Conferences&quot;)
-plt.show()
-</code></pre>
-
-
+ax<span style="color:#f92672">.</span>set_yticks(ylabel_ticks)
+ax<span style="color:#f92672">.</span>set_yticklabels(ylabel_list)
+ax<span style="color:#f92672">.</span>set_xticks(xlabel_ticks)  
+ax<span style="color:#f92672">.</span>set_xticklabels(xlabel_list)  
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Year&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Publication Count for Conferences&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div>
 
 
 <figure>
@@ -593,7 +565,6 @@ plt.show()
 
 
 </figure>
-
 <p>Clearly, the IEEE International Symposium on Information Theory (ISIT) seems to be the most popular conference for publishing polar code papers followed by the IEEE Information Theory Workshop (ITW) and the IEEE International Conference on Communications (ICC). We also see that the data for 2015 is incomplete as the ISIT-2015 and ICC-2015 conference proceedings are yet to appear on IEEE Xplore and the Allerton conference and GLOBECOM-2015 are yet to happen in October and December 2015 respectively.</p>
 
     </div>
@@ -776,7 +747,7 @@ plt.show()
   
 
   <p class="powered-by">
-    &copy; Veeresh Taranalli &middot; 
+    © Veeresh Taranalli &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
@@ -894,7 +865,7 @@ plt.show()
     
     
     
-    <script src="/js/academic.min.76a41a243fcea75defe7d35a07d3aaa3.js"></script>
+    <script src="/js/academic.min.59444117f1957a46872930c49af65e4d.js"></script>
 
   </body>
 </html>

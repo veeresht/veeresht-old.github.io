@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 4.1.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.68.3" />
 
   
 
@@ -400,18 +400,16 @@ The convolutional code is represented by the encoder matrix, $$ G(D)=[1&#43;D^2,
 
     <div class="article-style" itemprop="articleBody">
       <p>It is often helpful to visualize the operation of the Viterbi Algorithm used in the decoding of convolutional codes. Here is an attempt to do the same using Python, Matplotlib, NumPy, SciPy and CommPy.</p>
-
 <p>Below is a video which shows one such illustration of the Viterbi Algorithm in action using the following parameters.</p>
-
 <p>The convolutional code is represented by the encoder matrix,
 $$ G(D)=[1+D^2,1+D+D^2] $$
 Let us assume that the transmitted message is [1, 0, 0, 0] and hence the corresponding codeword is [11, 01, 11, 00]. Also assume that there was a single bit error during the transmission and therefore, let the received codeword be [11, 11, 11, 00]. The Viterbi algorithm operates on this received codeword and recovers the correct codeword [11, 01, 11, 00] as shown below.
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/RqpXrw1d19E" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/RqpXrw1d19E" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
-This animation was generated using Python code. The code along with this example can be found <a href="https://github.com/veeresht/viterbi-algorithm-animation" target="_blank">here</a>.</p>
+This animation was generated using Python code. The code along with this example can be found <a href="https://github.com/veeresht/viterbi-algorithm-animation">here</a>.</p>
 
     </div>
 
@@ -420,7 +418,7 @@ This animation was generated using Python code. The code along with this example
 
 <div class="article-tags">
   
-  <a class="badge badge-light" href="/tags/convolutional-codes/">convolutional codes</a>
+  <a class="badge badge-light" href="">convolutional codes</a>
   
   <a class="badge badge-light" href="/tags/commpy/">commpy</a>
   
@@ -601,7 +599,7 @@ This animation was generated using Python code. The code along with this example
   
 
   <p class="powered-by">
-    &copy; Veeresh Taranalli &middot; 
+    © Veeresh Taranalli &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
@@ -719,7 +717,7 @@ This animation was generated using Python code. The code along with this example
     
     
     
-    <script src="/js/academic.min.76a41a243fcea75defe7d35a07d3aaa3.js"></script>
+    <script src="/js/academic.min.59444117f1957a46872930c49af65e4d.js"></script>
 
   </body>
 </html>
